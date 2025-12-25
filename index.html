@@ -9,28 +9,77 @@
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
         .container { max-width: 850px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h1 { color: var(--primary); text-align: center; text-transform: uppercase; }
-        .section-header { background: var(--primary); color: white; padding: 15px; margin-top: 30px; border-radius: 6px; font-weight: bold; }
+        .section-header { background: var(--primary); color: white; padding: 15px; margin-top: 30px; border-radius: 4px; font-weight: bold; }
         .question { margin-bottom: 25px; padding: 15px; border-bottom: 1px solid #eee; }
         .options { display: grid; gap: 10px; margin-top: 10px; }
-        label { background: #f9f9f9; padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; display: block; }
+        
+        /* Interactive Label Styling */
+        label { 
+            background: #f9f9f9; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            display: block; 
+            transition: all 0.2s ease;
+        }
+        
+        /* Highlight selected answer on screen */
+        label:has(input:checked) {
+            background: #eef2ff;
+            border-color: var(--primary);
+            font-weight: bold;
+        }
+
         input[type="radio"] { margin-right: 10px; transform: scale(1.3); }
+        
         #coach-section { display: none; margin-top: 50px; border: 3px dashed var(--secondary); padding: 20px; background: #fffdfd; }
-        .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 30px; }
-        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 16px; transition: 0.2s; }
+        .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 40px; }
+        
+        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 16px; }
         .btn-calc { background: var(--primary); }
         .btn-print { background: var(--secondary); }
         .btn-reset { background: #6c757d; }
         .btn-coach { background: #444; }
+        
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background: var(--primary); color: white; }
-        textarea { width: 100%; height: 80px; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box; }
-        
+        textarea { width: 100%; height: 80px; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box; font-family: inherit; }
+
+        /* PRINT LOGIC: THE FULL REPORT SOLUTION */
         @media print {
-            .btn-container, .btn-coach, .section-header:first-of-type, .btn-reset, .question { display: none !important; }
-            #coach-section { display: block !important; border: none !important; page-break-before: always !important; break-before: page !important; }
+            /* Hide UI Buttons */
+            .btn-container, .btn-coach, .btn-reset, input[type="radio"] { display: none !important; }
+            
             body { background: white; padding: 0; }
             .container { box-shadow: none; border: none; width: 100%; max-width: none; }
+            
+            /* Show Questions and ensure they don't split awkwardly across pages */
+            .question { display: block !important; page-break-inside: avoid; border-bottom: 1px solid #ccc; }
+            
+            /* Visually indicate the SELECTED answer in the PDF */
+            label { border: 1px solid #eee !important; background: transparent !important; }
+            label:has(input:checked) { 
+                border: 2px solid black !important; 
+                background: #f0f0f0 !important; 
+                font-weight: bold !important;
+            }
+            label:has(input:checked)::before {
+                content: "✓ ";
+                color: green;
+            }
+
+            /* Push Coach Section to a separate Page 2/3 */
+            #coach-section { 
+                display: block !important; 
+                border: none !important; 
+                page-break-before: always !important; 
+                margin-top: 0 !important;
+                padding: 0 !important;
+            }
+            
+            textarea { border: 1px solid #999 !important; height: auto !important; min-height: 100px; }
         }
     </style>
 </head>
@@ -65,23 +114,23 @@
         </table>
 
         <h3>Ideal Positional Profiles (Westerlo Squad Fit)</h3>
-        <table style="font-size: 0.9rem;">
-            <thead><tr><th>Position</th><th>Target Profile</th><th>Why it fits our current squad</th></tr></thead>
+        <table style="font-size: 0.85rem;">
+            <thead><tr><th>Position</th><th>Target Profile</th><th>Strategic Rational</th></tr></thead>
             <tbody>
-                <tr><td><strong>GK / CB</strong></td><td><strong>ISTJ / ESTJ</strong></td><td>Need for reliable process, strict KPI adherence, and vocal command.</td></tr>
-                <tr><td><strong>Fullbacks (LB/RB)</strong></td><td><strong>ESTP (The Dynamo)</strong></td><td>Cool-headedness in 1v1 duels and rapid technical transition.</td></tr>
-                <tr><td><strong>Defensive Mid (6/8)</strong></td><td><strong>ENTJ (The Commander)</strong></td><td>Provides the vocal force to break our current "silent culture".</td></tr>
-                <tr><td><strong>Offensive Mid (10)</strong></td><td><strong>ESFP / ENFJ</strong></td><td>Acts as a "vibe changer" to lift team energy during match chaos.</td></tr>
-                <tr><td><strong>Attackers (9/W)</strong></td><td><strong>ESTP</strong></td><td>Requires high logical resilience (T) to stay clinical after missed chances.</td></tr>
+                <tr><td><strong>GK / CB</strong></td><td><strong>ISTJ / ESTJ</strong></td><td>Reliable process and vocal command to organize the back line.</td></tr>
+                <tr><td><strong>Fullbacks</strong></td><td><strong>ESTP</strong></td><td>Tactical resilience and technical transition speed.</td></tr>
+                <tr><td><strong>Defensive Mid</strong></td><td><strong>ENTJ</strong></td><td>The "Commander" profile to break the current silent culture.</td></tr>
+                <tr><td><strong>Offensive Mid</strong></td><td><strong>ENFJ / ESFP</strong></td><td>The "Vibe Changer" to lift energy during match setbacks.</td></tr>
+                <tr><td><strong>Attackers</strong></td><td><strong>ESTP</strong></td><td>High logical resilience (T) to stay clinical after missed chances.</td></tr>
             </tbody>
         </table>
 
         <h3>Resilience Verification</h3>
-        <p><strong>1. Physical Drain Test (Coaching Clarity):</strong></p>
+        <p><strong>1. Physical Drain Test:</strong> Observe coaching clarity under fatigue.</p>
         <textarea id="note1"></textarea>
-        <p><strong>2. Unfair Criticism Anchor:</strong></p>
+        <p><strong>2. Unfair Criticism Anchor:</strong> Logic vs Ego reaction.</p>
         <textarea id="note2"></textarea>
-        <p><strong>3. Incomplete Map Intuition (Leadership Speed):</strong></p>
+        <p><strong>3. Incomplete Map Intuition:</strong> Natural leadership speed.</p>
         <textarea id="note3"></textarea>
         <p><strong>Assessor Final Summary:</strong></p>
         <textarea id="coachComments"></textarea>
@@ -95,59 +144,59 @@
 </div>
 
 <script>
-    // Updated Questions with "Common Language" answers
+    // Randomized question bank with neutral sentences
     const questions = [
-        ["TF", "When I face a major setback, my internal monologue is:", "I take time to privately process how I feel about the situation.", "I find it helpful to talk through my feelings with someone I trust.", "I focus on analyzing the specific lessons to adjust my next steps.", "I prefer to maintain a short memory and stay focused on what's next."],
-        ["SN", "My relationship with setbacks and failure is:", "I see it as a significant barrier that requires a total restart.", "I view it as a painful experience that I work hard to prevent.", "I see it as a necessary source of data for my long-term development.", "I view it as a temporary challenge to my current momentum."],
-        ["TF", "If I were moved to the bench, my natural reaction would be:", "I would stay quiet and focus intensely on my individual training.", "I would feel a strong personal need to understand where I stand.", "I would increase my workload and request a specific feedback plan.", "I would remain professional and wait for the coach's guidance."],
-        ["JP", "I feel my self-belief is at its most stable when:", "I am receiving consistent positive feedback from staff and fans.", "I am certain that my personal preparation is 100% complete.", "I feel a strong sense of unity and high energy within the team.", "The game is flowing well and the team is in a winning position."],
-        ["JP", "Following a mistake that leads to a goal, I usually:", "Take a moment to internally process the frustration I feel.", "Look for a brief connection with a teammate for reassurance.", "Take a deliberate breath to reset my focus on the next action.", "Acknowledge the error to the group to show accountability."],
-        ["SN", "To me, a 'Growth Mindset' in professional football means:", "Being highly disciplined in following all team rules and systems.", "Deliberately stepping into uncomfortable or new learning zones.", "Striving to be recognized as the most naturally gifted player.", "Focusing on mistake-free play to maintain collective confidence."],
-        ["TF", "When facing extreme physical fatigue late in a match, I think:", "I hope to stay focused and avoid drawing too much attention.", "I focus on my internal grit to survive until the final whistle.", "I believe this is where my mental strength can outwork the opponent.", "I look for the energy of the crowd and my teammates to lift me."],
-        ["SN", "I feel most confident in my game when:", "The team is playing a system that I have mastered over time.", "I am faced with a complex new tactical problem to solve.", "The atmosphere in the dressing room is perfectly harmonious.", "I feel a clear physical or tactical advantage over my opponent."],
-        ["TF", "If a teammate gives me very direct criticism on the pitch, I:", "Tend to feel a bit protective of my current role and actions.", "Quickly filter the information for useful data and adjust my play.", "Feel a temporary dip in my overall energy and focus.", "Prefer to wait until a calmer moment to discuss the feedback."],
-        ["JP", "I personally define professional success by:", "The results and the final score displayed on the board.", "The quality of our process and the execution of our game plan.", "The professional recognition and status that comes with it.", "The strength of our relationships and team harmony."],
-        // ... Continuing with randomized/neutral common language for all 50 questions ...
-        ["EI", "In a quiet locker room after a difficult loss, I usually:", "Respect everyone's need for space and stay quiet myself.", "Try to share a proactive, outcome-focused message with others.", "Prefer to review the match statistics on my own.", "Wait for the senior players or captain to set the tone."],
-        ["EI", "My preferred method of communicating on the pitch is:", "Leading through my physical actions rather than words.", "Giving short, loud, and positive coaching instructions.", "Communicating mostly with the players in my immediate zone.", "Providing corrections when I see a technical mistake."],
-        ["EI", "If a teammate is struggling under a high press, I:", "Stay in my zone and focus on my own defensive duties.", "Move closer to give specific coaching and clear instructions.", "Use vocal energy to keep them alert and focused.", "Trust the coaching staff to make the necessary tactical change."],
-        ["EI", "My natural approach when meeting new people is:", "To be a careful observer before joining the conversation.", "To act as an ice-breaker and lead the social interaction.", "To speak up only when there is a specific point to address.", "To listen closely and follow the lead of the group."],
-        ["TF", "If I notice a teammate's effort level is below their usual standard:", "I stay focused on my own role and let the staff handle it.", "I address it directly and immediately to protect our standards.", "I might unintentionally match their energy if I'm feeling tired.", "I prefer to mention it to them in a more private setting later."],
-        ["TF", "I believe true team solidarity is best built through:", "Frequent social gatherings and off-pitch team bonding.", "Supporting and covering each other's actions during the game.", "Maintaining a policy of never criticizing a teammate in public.", "Focusing purely on the momentum that comes from winning."],
-        ["EI", "Following a questionable decision by the referee, I tend to:", "Approach the official to express my point of view.", "Immediately tell the team to ignore it and focus on the next ball.", "Keep my frustration internal to fuel a more aggressive play.", "Look toward the bench to see the coach's reaction."],
-        ["EI", "I believe the primary purpose of my voice on the pitch is:", "To express my authentic reactions when things are difficult.", "To organize the team shape and keep collective energy high.", "To make sure I am noticed as an option for the ball.", "To provide technical information that I am 100% sure of."],
-        ["EI", "When attending a club 'Meet and Greet' event, I find it:", "A bit draining because I value my private time.", "A great opportunity to build rapport and understand people.", "A standard professional duty that requires my full focus.", "A very easy and enjoyable social experience."],
-        ["EI", "When the coach asks for an opinion during a team meeting, I:", "Wait to see what the senior players think first.", "Propose a proactive solution to the group.", "Prefer to stay quiet to avoid the spotlight.", "Only speak up if I am directly asked for my input."],
-        ["SN", "When the coaching staff introduces a new tactic, I prefer to:", "Listen to the technical theory behind the change.", "See it on the board and then physically walk through the zones.", "Read the tactical notes and diagrams privately afterward.", "Understand the emotional 'why' behind the new approach."],
-        ["SN", "To perform at my absolute highest level, I value:", "The coach's pre-match speech and the power of his words.", "Visual tactical pictures/videos followed by on-pitch practice.", "The audible support and energy of the home crowd.", "Focusing solely on my internal will and desire to win."],
-        ["SN", "When I need to correct a technical error in my game, I prefer:", "Reviewing video of the error followed by physical drills.", "A detailed 1-on-1 discussion with the technical coach.", "Finding the right time to ask, while figuring it out myself.", "Studying the statistics to see the frequency of the error."],
-        ["SN", "During the match, I find that I focus most on:", "Scanning the pitch to track movements before I receive the ball.", "Staying alert for coaching instructions from the bench.", "My internal monologue and thinking through my next moves.", "Managing my emotional state to stay composed."],
-        ["EI", "If I had to describe my professional style in three words:", "Quiet, Smart, Observing.", "Vocal, Physical, Sharp.", "Brave, Social, Vocal.", "Fast, Lucky, Talented."],
-        ["SN", "When a coach says 'Don't make a foul,' my first instinct is:", "To think about the specific foul I must avoid.", "To reframe it as: 'Keep the defensive actions clean.'", "To feel a bit more nervous about my next tackle.", "To hope the instruction is directed at someone else."],
-        ["SN", "My preferred type of video analysis is:", "A 30-minute session focused on deep tactical theory.", "20 minutes of high-impact success and improvement clips.", "A session that highlights every mistake so I can fix them.", "A casual group chat setting while we are on the pitch."],
-        ["SN", "To me, 'Pitch Intuition' feels like:", "Thinking through the logic before acting on a feeling.", "Seeing what needs to happen and feeling the action needed.", "A logical conclusion based on my tactical knowledge.", "A sudden surge of adrenaline that guides my movement."],
-        ["SN", "To get 'in the zone' before a big game, I need:", "Total silence and a chance to be alone with my thoughts.", "High-energy music and physical interaction with the group.", "A clear and simple list of my personal KPIs for the day.", "To spend time visualizing the atmosphere of the stadium."],
-        ["SN", "I understand a teammate's intention on the pitch best by:", "Listening carefully to the words they use when shouting.", "Watching their body language, position, and 'feeling' their vibe.", "Knowing their personality and how they think off the pitch.", "Listening to what they say during our halftime discussions."],
-        ["JP", "Regarding the use of phones in the gym or physio room:", "I use it to stay connected with my personal circle.", "I prefer to keep it in my locker to maintain total focus.", "I tend to follow the example set by the senior players.", "I find it useful for listening to my own music only."],
-        ["JP", "When the team is leading 3-0, my intensity level:", "Adjusts slightly to conserve energy for the next match.", "Stays at 100% as I hunt for a clean sheet and more goals.", "Depends on whether the opponent is still fighting or not.", "Becomes a moment to show my individual technical skills."],
-        ["JP", "My personal standard for arriving 'on time' is:", "To be there exactly at the scheduled starting time.", "To be ready and prepared at least 5 minutes before the start.", "To arrive when the majority of the group arrives.", "To ensure that I am never the last person to walk in."],
-        ["JP", "If the media praises my performance at halftime, I:", "Might check out the interview on social media afterward.", "Focus on the team efforts first in all my communications.", "Enjoy sharing the deep insights of how the game is playing out.", "Feel a positive boost because my hard work was noticed."],
-        ["JP", "When receiving a correction from staff during training, I:", "Can sometimes feel a bit personally challenged by it.", "Listen closely and try to get a physical feeling for the change.", "Explain my perspective on why I did it differently.", "Nod and keep working to see how the change plays out."],
-        ["JP", "I believe a 'Complete Professional' is someone who:", "Is recognized as the most talented player in the squad.", "Maintains the highest standards even when training alone.", "Focuses on keeping the peace and avoiding all conflict.", "Works hard to remain popular and liked within the team."],
-        ["EI", "During team travel, my natural habit is:", "To stay isolated and focus on my own mental preparation.", "To build or seek out social contact with a teammate.", "To use the time for rest, such as sleeping or watching a movie.", "To join the group for casual chit-chat and small talk."],
-        ["JP", "I believe that team rules and protocols are:", "Guidelines that can be flexible for top-tier performers.", "The non-negotiable foundation of our collective force.", "A way for the coaching staff to maintain order and control.", "Occasionally annoying as I prefer to have more personal freedom."],
-        ["EI", "If I am unable to play due to an injury, I see my role as:", "Focusing entirely on my recovery at home.", "Staying present and providing vocal support before games.", "Avoiding the dressing room to stay out of the way.", "Waiting for a specific invitation from the staff to join."],
-        ["JP", "I judge the quality of my own performance based on:", "Whether the team ultimately won or lost the game.", "Whether I achieved my specific KPIs and tactical duties.", "The feedback I see in media and social media comments.", "Whether I personally enjoyed the game and felt good."],
-        ["JP", "If we are 3-1 down with 10 minutes left, I:", "Focus on protecting my individual performance stats.", "Celebrate the next goal like a winner and keep pushing.", "Hope for the final whistle so we can move on.", "Address other players so they can react and score."],
-        ["TF", "To me, a 'Crisis' on the pitch represents:", "A tactical failure that needs to be addressed afterward.", "A prime opportunity to lead and refocus a losing team.", "A survival situation where we must avoid further damage.", "A result of having low-performing teammates around me."],
-        ["EI", "My physical reaction immediately after a goal is conceded:", "I tend to look down and process the moment internally.", "I put my chest out, head up, and encourage my teammates.", "I show my frustration through my gestures or words.", "I look directly at the coach for tactical information."],
-        ["TF", "I believe a 'Warrior' on the pitch is someone who:", "Is the most aggressive and physically dominant player.", "Stays intense and focused from the very first second.", "Remains completely emotionless regardless of the score.", "Is the most vocal and loudest person in the group."],
-        ["TF", "When the coach becomes very angry or intense, I feel:", "A bit more nervous which affects my decision-making.", "That he is trying to transfer that energy to us on the pitch.", "That it is best to ignore the emotion and focus on play.", "That it can sometimes feel like a personal attack."],
-        ["TF", "To handle a temporary dip in my confidence, I:", "Look for external praise to rebuild my self-belief.", "Utilize my internal reset protocols and logical thinking.", "Hope for an easy win in the next game to get back on track.", "Try to avoid the ball to prevent making further mistakes."],
-        ["TF", "When the opponent is dominating possession, I feel:", "A sense of panic as if we are losing control of the game.", "Focused and disciplined on my specific pressing triggers.", "A bit bored and waiting for the ball to come back to us.", "Frustrated at the other units for losing the ball."],
-        ["TF", "I believe a leader's job immediately after a loss is:", "To identify the specific mistakes that were made.", "To support the group and refocus each individual.", "To stay quiet and lead through a stoic example.", "To defend the team against any outside criticism."],
-        ["TF", "My personal 'fighting spirit' is mostly triggered by:", "The desire to avoid any personal embarrassment.", "A deep internal commitment to the collective force.", "The professional rewards and bonuses for winning.", "A desire to step up and be the hero for the team."],
-        ["EI", "To me, 'ONE FORCE' in a team environment means:", "A squad full of highly talented individual players.", "A vocal group that holds each other to high standards.", "An environment where everyone is extremely comfortable.", "A team that has enough rest to maintain a balanced life."]
+        ["TF", "When facing a major setback, my natural internal monologue is:", "I prefer to take time to privately process the situation.", "I find it helpful to discuss my feelings with others.", "I analyze the specific lessons to adjust my next steps.", "I prefer to move on quickly and focus on the next play."],
+        ["SN", "My view on technical failure is:", "I see it as a significant barrier to current progress.", "I view it as a painful experience I try hard to avoid.", "I see it as a source of data for my long-term growth.", "I view it as a temporary blow to my current momentum."],
+        ["TF", "If moved to the bench, my natural instinct would be:", "I would stay quiet and focus on individual improvement.", "I would feel a strong personal need to know where I stand.", "I would increase my workload and request a feedback plan.", "I would remain professional and wait for the staff's lead."],
+        ["JP", "My self-belief is most stable when:", "I am receiving consistent positive feedback.", "I know my personal preparation is 100% complete.", "I feel a high sense of unity within the group.", "The team is in a clear winning position."],
+        ["JP", "Following a mistake that leads to a goal, I usually:", "Take a moment to internally process my frustration.", "Look for a brief connection with a teammate for support.", "Take a deliberate breath to reset for the next action.", "Acknowledge the error to the group to show accountability."],
+        ["SN", "To me, a 'Growth Mindset' means:", "Following team rules and systems with high discipline.", "Deliberately stepping into uncomfortable learning zones.", "Striving to be recognized as a highly gifted player.", "Focusing on mistake-free play to maintain confidence."],
+        ["TF", "Facing extreme fatigue late in a match, I think:", "I hope to stay focused and avoid drawing attention.", "I focus on my internal grit to survive the whistle.", "I believe my mental strength can outwork the opponent.", "I look for the energy of the crowd to lift me."],
+        ["SN", "I feel most confident in my game when:", "The team plays a system I have mastered over time.", "I am faced with a complex new tactical problem.", "The atmosphere in the dressing room is harmonious.", "I feel a clear physical advantage over my opponent."],
+        ["TF", "If a teammate gives me direct criticism on the pitch, I:", "Tend to feel a bit protective of my current actions.", "Filter the info for useful data and adjust my play.", "Feel a temporary dip in my overall energy level.", "Prefer to wait for a calm moment to discuss it."],
+        ["JP", "I personally define professional success by:", "The final results and the score on the board.", "The quality of our process and the game plan execution.", "The professional status that comes with performance.", "The strength of team relationships and harmony."],
+        // Questions 11-50 simplified for brevity, following the same logic...
+        ["EI", "In a quiet locker room after a loss, I usually:", "Respect the silence and process things privately.", "Share a proactive, outcome-focused message.", "Prefer to review individual match stats alone.", "Wait for the senior players to set the tone."],
+        ["EI", "My preferred method of pitch communication is:", "Leading through my actions rather than words.", "Giving short, loud, and positive coaching instructions.", "Communicating mostly with my immediate zone.", "Providing technical corrections when I see them."],
+        ["EI", "If a teammate is struggling under a high press, I:", "Stay in my zone and focus on my own duties.", "Move closer to give specific, clear instructions.", "Use vocal energy to keep them alert and focused.", "Trust the coaching staff to handle the adjustment."],
+        ["EI", "My natural approach when meeting new people is:", "To observe carefully before joining in.", "To act as an ice-breaker and lead the social interaction.", "To speak up only when there is a specific point.", "To follow the lead and vibe of the group."],
+        ["TF", "If I notice a teammate's effort is below standard:", "I stay focused on my role and let the staff handle it.", "I address it directly and immediately to protect standards.", "I might match their energy if I'm feeling tired.", "I prefer to mention it in a private setting later."],
+        ["TF", "I believe team solidarity is built through:", "Frequent social gatherings and off-pitch bonding.", "Supporting and covering each other's actions in-game.", "A policy of never criticizing a teammate in public.", "The natural momentum that comes from winning."],
+        ["EI", "Following a questionable referee decision, I tend to:", "Approach the official to express my point of view.", "Tell the team to ignore it and focus on the next ball.", "Keep my frustration internal to fuel my play.", "Look toward the bench for the coach's reaction."],
+        ["EI", "The primary purpose of my voice on the pitch is:", "To express my reactions when things are difficult.", "To organize team shape and keep energy high.", "To ensure I am noticed as an option for the ball.", "To provide technical info I am 100% sure of."],
+        ["EI", "Attending a club 'Meet and Greet' event, I find it:", "A bit draining as I value my private time.", "A great chance to build rapport and read people.", "A standard duty that requires full professional focus.", "An easy and enjoyable social experience."],
+        ["EI", "When the coach asks for an opinion in a meeting, I:", "Wait to see what senior players think first.", "Propose a proactive solution to the group.", "Prefer to stay quiet to avoid the spotlight.", "Only speak up if I am directly asked for input."],
+        ["SN", "Learning a new tactic, I prefer to:", "Listen to the technical theory behind the change.", "See the board and then physically walk the zones.", "Read tactical notes and diagrams privately later.", "Understand the emotional 'why' behind the approach."],
+        ["SN", "To perform at my highest level, I value:", "The coach's speech and the power of his words.", "Visual tactical pictures followed by on-pitch practice.", "The audible support and energy of the home crowd.", "Focusing solely on my internal will to win."],
+        ["SN", "To correct a technical error, I prefer:", "Reviewing video followed by physical drills.", "A detailed 1-on-1 with the technical coach.", "Finding time to ask while figuring it out myself.", "Studying stats to see the frequency of the error."],
+        ["SN", "During the match, I focus most on:", "Scanning to track movements before I get the ball.", "Staying alert for instructions from the bench.", "My internal monologue and thinking through moves.", "Managing my emotional state to stay composed."],
+        ["EI", "My professional style in three words:", "Quiet, Smart, Observing.", "Vocal, Physical, Sharp.", "Brave, Social, Vocal.", "Fast, Lucky, Talented."],
+        ["SN", "When a coach says 'Don't foul,' my instinct is:", "To think about the specific foul I must avoid.", "To reframe it as: 'Keep the actions clean.'", "To feel a bit more nervous about my next tackle.", "To hope the instruction is for someone else."],
+        ["SN", "My preferred video analysis is:", "A 30-minute session on deep tactical theory.", "20 minutes of high-impact success/improvement clips.", "A session that highlights every mistake to fix.", "A casual group chat setting while on the pitch."],
+        ["SN", "To me, 'Pitch Intuition' feels like:", "Thinking through the logic before acting on feeling.", "Seeing what needs to happen and feeling the action.", "A logical conclusion based on tactical knowledge.", "A surge of adrenaline that guides my movement."],
+        ["SN", "To get 'in the zone' before a game, I need:", "Total silence and time alone with my thoughts.", "High-energy music and physical interaction.", "A clear and simple list of my personal KPIs.", "To spend time visualizing the stadium atmosphere."],
+        ["SN", "I understand a teammate's intent best by:", "Listening carefully to the words they use.", "Watching body language, position, and 'vibe'.", "Knowing their personality and how they think.", "Listening to what they say during halftime."],
+        ["JP", "Using phones in the gym or physio room:", "I use it to stay connected with my circle.", "I prefer to keep it in my locker for total focus.", "I follow the example set by the senior players.", "I find it useful for my own music only."],
+        ["JP", "When leading 3-0, my intensity:", "Adjusts slightly to conserve energy for later.", "Stays at 100% to hunt a clean sheet and goals.", "Depends on whether the opponent is still fighting.", "Becomes a moment to show individual technical skill."],
+        ["JP", "My standard for arriving 'on time' is:", "To be there exactly at the scheduled time.", "To be ready and prepared 5 minutes before start.", "To arrive when the majority of the group does.", "To ensure I am never the last person to walk in."],
+        ["JP", "If media praises my game at halftime, I:", "Might check social media during the break.", "Focus on team efforts first in all my comments.", "Enjoy sharing the deep insights of the game.", "Feel a boost because my work was noticed."],
+        ["JP", "Receiving a correction from staff, I:", "Can sometimes feel personally challenged by it.", "Listen and try to get a physical feel for the change.", "Explain my perspective on why I did it differently.", "Nod and keep working to see how it plays out."],
+        ["JP", "A 'Complete Professional' is someone who:", "Is recognized as the most talented in the squad.", "Maintains high standards even when training alone.", "Focuses on keeping the peace and avoiding conflict.", "Works hard to remain popular within the team."],
+        ["EI", "During team travel, my habit is:", "To stay isolated and focus on mental preparation.", "To seek out social contact with a teammate.", "To use the time for rest, sleep, or a movie.", "To join the group for casual small talk."],
+        ["JP", "I believe team rules and protocols are:", "Guidelines that can be flexible for top performers.", "The non-negotiable foundation of our collective force.", "A way for the coaching staff to maintain control.", "Occasionally annoying as I prefer personal freedom."],
+        ["EI", "If I am injured, I see my role as:", "Focusing entirely on my recovery at home.", "Staying present and providing vocal support.", "Avoiding the dressing room to stay out of the way.", "Waiting for a specific invitation to join the group."],
+        ["JP", "I judge my own performance based on:", "Whether the team ultimately won or lost.", "Whether I achieved my tactical duties and KPIs.", "The feedback in media and social media comments.", "Whether I personally enjoyed the game."],
+        ["JP", "If 3-1 down with 10 minutes left, I:", "Focus on protecting my individual performance stats.", "Celebrate the next goal like a winner and push.", "Hope for the final whistle so we can move on.", "Address other players so they can react and score."],
+        ["TF", "A 'Crisis' on the pitch represents:", "A tactical failure that needs a post-match fix.", "An opportunity to lead and refocus a losing team.", "A situation where we must avoid further damage.", "A result of having low-performing teammates."],
+        ["EI", "My reaction after a goal is conceded:", "I look down and process the moment internally.", "I put my chest out and encourage the teammates.", "I show my frustration through gestures or words.", "I look at the coach for tactical information."],
+        ["TF", "A 'Warrior' on the pitch is someone who:", "Is the most aggressive and physically dominant.", "Stays intense and focused from the first second.", "Remains completely emotionless regardless of score.", "Is the most vocal person in the group."],
+        ["TF", "When the coach is very angry, I feel:", "A bit more nervous which affects my decisions.", "That he is transferring energy to the pitch.", "That it is best to ignore the emotion and play.", "That it can sometimes feel like a personal attack."],
+        ["TF", "To handle a dip in confidence, I:", "Look for external praise to rebuild self-belief.", "Utilize internal reset protocols and logic.", "Hope for an easy win to get back on track.", "Try to avoid the ball to prevent mistakes."],
+        ["TF", "When the opponent dominates possession, I:", "Feel a sense of panic as if we are losing control.", "Stay disciplined on my pressing triggers.", "Feel a bit bored waiting for the ball to return.", "Feel frustrated at other units for losing the ball."],
+        ["TF", "A leader's job after a loss is:", "To identify the specific mistakes made.", "To support the group and refocus each individual.", "To stay quiet and lead through a stoic example.", "To defend the team against outside criticism."],
+        ["TF", "My fighting spirit is triggered by:", "The desire to avoid personal embarrassment.", "A deep internal commitment to the collective force.", "The professional rewards for winning.", "A desire to step up and be the hero for the team."],
+        ["EI", "To me, 'ONE FORCE' means:", "A squad full of highly talented individuals.", "A vocal group that holds each other to standards.", "An environment where everyone is comfortable.", "A team with enough rest to maintain balance."]
     ];
 
     function shuffle(array) {
@@ -163,12 +212,11 @@
             const div = document.createElement('div');
             div.className = 'question';
             
-            // Map the trait to the answer and shuffle them
             let options = [
-                { val: 'a', text: q[2], trait: q[0].charAt(1) }, // Intro/Feel/Perc
-                { val: 'b', text: q[3], trait: q[0].charAt(0) }, // Extro/Think/Judg
-                { val: 'c', text: q[4], trait: q[0].charAt(0) }, // Extro/Think/Judg
-                { val: 'd', text: q[5], trait: q[0].charAt(1) }  // Intro/Feel/Perc
+                { val: 'a', text: q[2], trait: q[0].charAt(1) },
+                { val: 'b', text: q[3], trait: q[0].charAt(0) },
+                { val: 'c', text: q[4], trait: q[0].charAt(0) },
+                { val: 'd', text: q[5], trait: q[0].charAt(1) }
             ];
             shuffle(options);
 
@@ -190,6 +238,11 @@
         }
     }
 
+    function updateTitle() {
+        const name = document.getElementById('playerName').value || "Assessment";
+        document.title = `KVC_Elite_Report_${name.replace(/\s+/g, '_')}`;
+    }
+
     function calculateProfile() {
         let sc = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
         questions.forEach((q, i) => {
@@ -201,21 +254,14 @@
         const prof = [(sc.E >= sc.I ? "E" : "I"), (sc.S >= sc.N ? "S" : "N"), (sc.T >= sc.F ? "T" : "F"), (sc.J >= sc.P ? "J" : "P")].join('');
         document.getElementById('result-display').innerHTML = `<h3>Calculated Profile: ${prof}</h3>`;
         document.getElementById('scoringBody').innerHTML = `
-            <tr><td>Energy</td><td>E (Extrovert): ${sc.E}</td><td>I (Introvert): ${sc.I}</td><td>${sc.E > sc.I ? 'E' : 'I'}</td></tr>
-            <tr><td>Information</td><td>S (Sensing): ${sc.S}</td><td>N (Intuition): ${sc.N}</td><td>${sc.S > sc.N ? 'S' : 'N'}</td></tr>
-            <tr><td>Decision</td><td>T (Thinking): ${sc.T}</td><td>F (Feeling): ${sc.F}</td><td>${sc.T > sc.F ? 'T' : 'F'}</td></tr>
-            <tr><td>Lifestyle</td><td>J (Judging): ${sc.J}</td><td>P (Perceiving): ${sc.P}</td><td>${sc.J > sc.P ? 'J' : 'P'}</td></tr>`;
+            <tr><td>Energy (E/I)</td><td>E: ${sc.E}</td><td>I: ${sc.I}</td><td>${sc.E > sc.I ? 'E' : 'I'}</td></tr>
+            <tr><td>Information (S/N)</td><td>S: ${sc.S}</td><td>N: ${sc.N}</td><td>${sc.S > sc.N ? 'S' : 'N'}</td></tr>
+            <tr><td>Decision (T/F)</td><td>T: ${sc.T}</td><td>F: ${sc.F}</td><td>${sc.T > sc.F ? 'T' : 'F'}</td></tr>
+            <tr><td>Lifestyle (J/P)</td><td>J: ${sc.J}</td><td>P: ${sc.P}</td><td>${sc.J > sc.P ? 'J' : 'P'}</td></tr>`;
     }
 
     function resetForm() {
-        if(confirm("Are you sure you want to clear the form for a new session?")) {
-            location.reload();
-        }
-    }
-
-    function updateTitle() {
-        const name = document.getElementById('playerName').value || "Assessment";
-        document.title = `KVC_Elite_Report_${name.replace(/\s+/g, '_')}`;
+        if(confirm("Clear all data and start a new form?")) location.reload();
     }
 
     renderQuestions();
