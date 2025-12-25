@@ -30,7 +30,6 @@
         textarea { width: 100%; height: 100px; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; font-family: inherit; }
         .summary-box { background: #eef2ff; padding: 15px; border-left: 5px solid var(--primary); margin: 15px 0; border-radius: 4px; }
         .pdf-page-break { page-break-before: always; height: 1px; }
-        @media print { .btn-container, .btn-coach { display: none !important; } }
     </style>
 </head>
 <body>
@@ -61,7 +60,7 @@
         <div class="pdf-page-break"></div>
         <h3>Tipping Point Matrix (Segment Counts)</h3>
         <table>
-            <thead><tr><th>Segment</th><th>Letter Count A</th><th>Letter Count B</th><th>Status</th></tr></thead>
+            <thead><tr><th>Segment</th><th>Trait A Count</th><th>Trait B Count</th><th>Status</th></tr></thead>
             <tbody id="scoringBody"></tbody>
         </table>
 
@@ -75,7 +74,7 @@
                 <li><strong>T (Thinking):</strong> Logic Shield. Immune to emotional contagion; treats misses as technical data.</li>
                 <li><strong>F (Feeling):</strong> Solidarity Builder. Provides the emotional glue for team cohesion.</li>
                 <li><strong>J (Judging):</strong> Process Pro. Strict adherence to standards and KPI protocols.</li>
-                <li><strong>P (Perceiving):</strong> Warrior Adaptability. Thrives in match chaos and resets rapidly.</li>
+                <li><strong>P (Perceiving):</strong> Warrior Adaptability. Resets rapidly during match chaos.</li>
             </ul>
         </div>
 
@@ -88,154 +87,11 @@
         <textarea id="note2" placeholder="Do they stay logical (T) or become defensive/emotional?"></textarea>
         
         <p><strong>3. Incomplete Map Intuition:</strong> Natural leadership speed and VK orientation.</p>
-        <textarea id="note3" placeholder="Did they take the pen and lead the 'coaching' without permission?"></textarea>
+        <textarea id="note3" placeholder="Did they lead the 'coaching' of the solution without permission?"></textarea>
 
         <p><strong>Assessor Final Summary:</strong></p>
         <textarea id="coachComments" placeholder="Recruitment recommendation..."></textarea>
     </div>
 
     <div class="btn-container">
-        <button class="btn-calc" onclick="calculateProfile()">Generate Result</button>
-        <button class="btn-print" onclick="printPDF()">Print PDF Report</button>
-        <button class="btn-save" onclick="saveDataFile()">Save Data File</button>
-    </div>
-</div>
-
-<script>
-    // Full 50-question logic mapped to Jungian Segments
-    const questions = [
-        ["TF", "When I face a major setback, my internal monologue is:", "Why me?", "Talk to someone.", "What is the lesson? Adjust.", "Forget it fast."],
-        ["SN", "Relationship with failure?", "A wall.", "Avoid at all costs.", "A stepping stone.", "Temporary blow."],
-        ["TF", "If dropped from the lineup, I would:", "Get quiet.", "Feel deep doubt.", "Increase intensity + Improve.", "Wait for coach."],
-        ["JP", "Self-belief is most stable when:", "Getting praise.", "Preparation is 100%.", "Teammates are high energy.", "Winning easy."],
-        ["JP", "Reaction to mistake causing a goal:", "Internalize frustration.", "Look for reassurance.", "Deep breath + Reset.", "Apologize."],
-        ["SN", "A 'Growth Mindset' is:", "Follow rules.", "Embrace discomfort.", "Being most talented.", "Avoiding errors."],
-        ["TF", "In 85th minute exhaustion, I think:", "Don't pass to me.", "Just survive.", "Mental strength beats talent.", "Fans lift me."],
-        ["SN", "I feel most confident when:", "Playing familiar system.", "Challenged by new problem.", "Vibe is 10/10.", "Clear advantage."],
-        ["TF", "Harsh teammate criticism on pitch:", "Defensive.", "Process data & Adjust.", "Energy drop.", "Wait until later."],
-        ["JP", "Success is defined by:", "Final score.", "Execution and process.", "Status/Recognition.", "Group harmony."],
-        // Questions 11-20 (Communication)
-        ["EI", "In a silent locker room after loss:", "Stay silent.", "Vocal outcome-focused message.", "Analyze stats alone.", "Wait for captain."],
-        ["EI", "Pitch communication preference:", "Lead by example (silent).", "Short, loud coaching on the pitch.", "Talk to 2-3 players nearby.", "Correcting mistakes."],
-        ["TF", "Teammate panicking during a defensive press:", "Avoid them.", "Give to the point coaching and give clear instructions.", "Yell to wake up.", "Hope for sub."],
-        ["EI", "Natural role with strangers:", "Observer.", "Ice breaker/Talker.", "Speak for specific points.", "Follower."],
-        ["TF", "Teammate showing 60% effort during training, then usual:", "Ignore it.", "Call out immediately.", "Do the same.", "Mention privately."],
-        ["TF", "Solidarity is built by:", "Off-pitch social.", "Covering each others mistakes on the pitch.", "Never criticize in public.", "Winning."],
-        ["EI", "Reaction to bad ref call:", "Chase ref.", "Tell team: 'Ref done, next ball!'", "Internal anger.", "Look at the coach."],
-        ["EI", "Primary use of voice:", "Express frustration.", "Organize and keep energy high.", "Ask for ball.", "Technical info only."],
-        ["EI", "Small talk in meet-and-greet:", "Exhausting.", "Build rapport & read people.", "Duty only.", "Easy."],
-        ["EI", "Opinion in team meeting:", "Wait for seniors.", "Propose a solution.", "Stay quiet.", "Only if asked."],
-        // Questions 21-30 (VK / NLP)
-        ["SN", "Learning a new tactic:", "Listen to theory.", "See board + Physical walk.", "Read notes.", "Feel emotions."],
-        ["SN", "Best way to perform highest level:", "Coach's pep talk & his words.", "Visual tactical pictures/video's + 'on-pitch' practice.", "Support of the crowd.", "Having the Will to win."],
-        ["SN", "Fixing technical error:", "Video + Physical drill.", "Talk to coach.", "Wait for the right time to ask, I can figure it out it the meantime.", "Study stats."],
-        ["SN", "During the Match I focus...:", "Track movements by scanning before I get the ball.", "Wait for coaching from bench.", "Internal monologue.", "Manage emotions."],
-        ["EI", "Your Style in 3 words:", "Quiet, Smart, Observing.", "Vocal, Physical, Sharp.", "Brave, Social, Vocal.", "Fast, Lucky, Talented."],
-        ["SN", "Response to 'Don't make a foul':", "Think of foul.", "Reframed: 'Keep the actions clean'.", "Nervous.", "Hope not me."],
-        ["SN", "Preferred video analysis:", "30 min theory.", "20 min powerful success and improvement clips.", "Focus on all the mistakes to improve.", "Group chat setting on the pitch."],
-        ["SN", "Pitch intuition feels like:", "I think before I act on feeling, I listen to the voice in my head.", " I can see what needs to happen and feel intuitivly the action(s) needed.", "Logic.", "Adrenaline."],
-        ["SN", "To get 'in the zone' before a game I need:", "Silence.", "Energy music + Physical contact.", "Personal KPIs.", "Visualize stadium."],
-        ["SN", "Understand teammate's intent:", "Listening.", "Watching their body language & body position  + 'feel' their vibe'.", "Know their Personality.", "During Halftime talks, I can understand better."],
-        // Questions 31-40 (Accountability)
-        ["JP", "Gym/Physio phone policy:", "Stay connected.", "In the box/locker.", "Mirror seniors.", "I use it for Music only."],
-        ["JP", "3-0 up intensity:", "Save energy.", "Hunt clean sheet + get another Goal.", "Depends on the opponent if they have given up or not.", "Show off my skills, perfect moment."],
-        ["JP", "Arriving 'on time':", "Arrive exactly on time.", "at least 5 mins before start.", "Follow the group.", "As long as am not last."],
-        ["JP", "Media praising my half time game:", "Check out my interview on social media later.", "Its about the team not about me, I will always talk about the team efforts first.", "Share in detail what happened and give deep insights", "Great, happy they noticed, it will give me a boost."],
-        ["JP", "Correction from the coaching staff during training:", "Insulted.", "Listen + try to get a feeling of what to change.", "Explain why you did it differently.", "Nod/Keep your head down and see how it goes."],
-        ["JP", "Complete professional is:", "Most talented.", "Keep Standards even when alone.", "Best to keep the peace and NO conflict.", "Best to stay Popular within the team."],
-        ["EI", "Team traveling habits:", "Isolated.", "Build or seek contact with a teammate.", "Sleep/Movie.", "Gather for chit-chat and some small talk."],
-        ["JP", "Rules and protocols are:", "There to be broken.", "Foundation of force.", "Coach's control.", "Annoying I prefer to be free."],
-        ["EI", "My Role when injured:", "Stay home.", "Stay Present and give vocal support before games.", "Avoid the dressing room afrter games.", "Wait for the staff to invite me."],
-        ["JP", "Performance judgment:", "I judge the game by Win/Loss.", "KPIs and duties achieved.", "Media/Social comments.", "As long as I had my Enjoyment."],
-        // Questions 41-50 (Resilience)
-        ["JP", "3-1 down, 10 mins left:", "Protect my stats.", "Celebrate next goal like winner, we keep going.", "Hope for the whistle.", "Blame the other players so they can react and score."],
-        ["TF", "Pitch crisis is:", "Tactical failure.", "To Lead a losing team.", "Survival.", "Low-performing teammates."],
-        ["EI", "Reaction after goal conceded:", "Head down.", "Chest out, head up and encourage others.", "Hands up/Angry.", "Look at the coach for info."],
-        ["TF", "A 'Warrior' is:", "Aggressive.", "Focus and intense fron the 1st second of the game, regardless of score.", "Emotionless.", "Loudest."],
-        ["TF", "Coach getting angry:", "Nervous.", "He is wanting to get this energy to the pitch.", "Ignore.", "Personal attack."],
-        ["TF", "Handle doubt relapse:", "Search for praise.", "Reset Protocol + Logic.", "Hope for easy win.", "Avoid ball."],
-        ["TF", "Opponent dominates ball:", "Panic.", "Focus on Press triggers.", "Bored.", "Midfield anger."],
-        ["TF", "Leader's job after loss:", "Identify mistakes.", "Support & Refocus individuals.", "Stay quiet.", "Defend team."],
-        ["TF", "Fighting spirit trigger:", "No embarrassment.", "Commitment to the Force.", "Money.", "Hero desire."],
-        ["EI", "What does for you ONE FORCE mean in a Team:", "A Team of a lot of Talented players is always the best FORCE to have in a team.", "A Team that is Vocal holds each other Accountable while covering each others mistakes on the pitch.", "Everyone to be very Comfortable extremely social with each other, .", "A Team that has enough Days off to recover to they can have a balanced life."]
-    ];
-
-    function renderQuestions() {
-        const container = document.getElementById('survey-questions');
-        questions.forEach((q, i) => {
-            const div = document.createElement('div');
-            div.className = 'question';
-            div.innerHTML = `<p>${i+1}. ${q[1]}</p>
-                <div class="options">
-                    <label><input type="radio" name="q${i}" value="a"> ${q[2]}</label>
-                    <label><input type="radio" name="q${i}" value="b"> ${q[3]}</label>
-                    <label><input type="radio" name="q${i}" value="c"> ${q[4]}</label>
-                    <label><input type="radio" name="q${i}" value="d"> ${q[5]}</label>
-                </div>`;
-            container.appendChild(div);
-        });
-    }
-
-    function unlockCoach() {
-        if(prompt("Enter Coach Password:") === "kvc2025") {
-            document.getElementById('coach-section').style.display = 'block';
-            window.scrollTo(0, document.getElementById('coach-section').offsetTop);
-        }
-    }
-
-    function calculateProfile() {
-        let scores = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
-        questions.forEach((q, i) => {
-            const sel = document.querySelector(`input[name="q${i}"]:checked`);
-            if(!sel) return;
-            const type = q[0];
-            const val = sel.value;
-            if(val === 'c') { // Elite options mostly mapped to 'c'
-                if(type.includes("E")) scores.E++; if(type.includes("N")) scores.N++; if(type.includes("T")) scores.T++; if(type.includes("J")) scores.J++;
-            } else if(val === 'a') {
-                if(type.includes("I")) scores.I++; if(type.includes("S")) scores.S++; if(type.includes("F")) scores.F++; if(type.includes("P")) scores.P++;
-            } else if(val === 'b') {
-                if(type.includes("E")) scores.E++; if(type.includes("F")) scores.F++; if(type.includes("J")) scores.J++;
-            }
-        });
-
-        const profile = [(scores.E >= scores.I ? "E" : "I"), (scores.S >= scores.N ? "S" : "N"), (scores.T >= scores.F ? "T" : "F"), (scores.J >= scores.P ? "J" : "P")].join('');
-        const fit = { "ESTP": "The Dynamo (Finisher/Back)", "ENTJ": "The Commander (Def Mid)", "ESFP": "The Performer (Off Mid)", "ENFJ": "The Protagonist" };
-        
-        document.getElementById('result-display').innerHTML = `<h3>Calculated Profile: ${profile}</h3><p><strong>Primary Recruitment Match:</strong> ${fit[profile] || "Mixed Profile (Review Counts)"}</p>`;
-        
-        document.getElementById('scoringBody').innerHTML = `
-            <tr><td>Energy</td><td>Extrovert: ${scores.E}</td><td>Introvert: ${scores.I}</td><td>${scores.E > 8 ? 'ELITE FORCE' : 'LOW ENERGY'}</td></tr>
-            <tr><td>Information</td><td>Sensing: ${scores.S}</td><td>Intuition: ${scores.N}</td><td>${scores.S > 5 ? 'V/K DOMINANT' : 'THEORY PLAYER'}</td></tr>
-            <tr><td>Decision</td><td>Thinking: ${scores.T}</td><td>Feeling: ${scores.F}</td></tr>
-            <tr><td>Lifestyle</td><td>Judging: ${scores.J}</td><td>Perceiving: ${scores.P}</td></tr>`;
-    }
-
-    function printPDF() {
-        const name = document.getElementById('playerName').value || "Player";
-        const element = document.getElementById('assessment-content');
-        html2pdf().from(element).set({
-            margin: [10, 10],
-            filename: `KVC_Elite_Report_${name.replace(/\s+/g, '_')}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).save();
-    }
-
-    function saveDataFile() {
-        const name = document.getElementById('playerName').value || "Unnamed_Player";
-        const result = document.getElementById('result-display').innerText;
-        const matrix = document.getElementById('scoringTable').innerText;
-        const notes = document.getElementById('coachComments').value;
-        const blob = new Blob([`KVC WESTERLO REPORT\nNAME: ${name}\n\nRESULT:\n${result}\n\nMATRIX:\n${matrix}\n\nINTERVIEW NOTES:\n${notes}`], { type: 'text/plain' });
-        const a = document.createElement('a');
-        a.download = `${name.replace(/\s+/g, '_')}_Archive.txt`;
-        a.href = URL.createObjectURL(blob);
-        a.click();
-    }
-
-    renderQuestions();
-</script>
-</body>
-</html>
+        <button class="btn-calc" onclick="calculate
