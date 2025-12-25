@@ -9,13 +9,11 @@
         :root { --primary: #1a2a6c; --secondary: #b21f1f; --success: #28a745; --bg: #f4f7f6; --text: #333; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
         .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: var(--primary); text-align: center; font-size: 1.6rem; text-transform: uppercase; margin-bottom: 5px; }
-        .section-header { background: var(--primary); color: white; padding: 12px; margin-top: 30px; border-radius: 4px; font-weight: bold; font-size: 1.1rem; }
+        h1 { color: var(--primary); text-align: center; font-size: 1.6rem; text-transform: uppercase; }
+        .section-header { background: var(--primary); color: white; padding: 12px; margin-top: 30px; border-radius: 4px; font-weight: bold; }
         .question { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        .question p { font-weight: 600; margin-bottom: 12px; font-size: 1rem; }
         .options { display: flex; flex-direction: column; gap: 10px; }
         label { background: #f9f9f9; padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; display: block; -webkit-tap-highlight-color: transparent; }
-        label:hover { background: #eef2ff; border-color: var(--primary); }
         input[type="radio"] { transform: scale(1.3); margin-right: 12px; vertical-align: middle; }
         #coach-section { display: none; margin-top: 50px; border: 4px dashed var(--secondary); padding: 25px; border-radius: 12px; background: #fffdfd; }
         .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 40px; }
@@ -27,9 +25,8 @@
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background: var(--primary); color: white; }
-        textarea { width: 100%; height: 100px; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; font-family: inherit; }
+        textarea { width: 100%; height: 100px; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; }
         .summary-box { background: #eef2ff; padding: 15px; border-left: 5px solid var(--primary); margin: 15px 0; border-radius: 4px; }
-        .pdf-page-break { page-break-before: always; height: 1px; }
     </style>
 </head>
 <body>
@@ -66,31 +63,31 @@
             <h4>Trait Meanings for KVC Westerlo</h4>
             <ul style="font-size: 0.9rem; padding-left: 20px;">
                 <li><strong>E (Extrovert):</strong> Vocal Force. Breaks the silent culture.</li>
-                <li><strong>I (Introvert):</strong> Internal Processor. High risk of "Relapse of Doubt".</li>
-                <li><strong>S (Sensing):</strong> 50/50 V/K Talent. Focuses on technical "feel" and visual details.</li>
-                <li><strong>N (Intuitive):</strong> Pattern Reader. Anticipates tactical moves.</li>
+                <li><strong>I (Introvert):</strong> Internal Processor. Risk of "Relapse of Doubt".</li>
+                <li><strong>S (Sensing):</strong> 50/50 V/K Talent engine.</li>
+                <li><strong>N (Intuitive):</strong> Pattern Reader.</li>
                 <li><strong>T (Thinking):</strong> Logic Shield. Immune to emotional contagion.</li>
-                <li><strong>F (Feeling):</strong> Solidarity Builder. Glue for team cohesion.</li>
-                <li><strong>J (Judging):</strong> Process Pro. Adheres to strict KPI protocols.</li>
-                <li><strong>P (Perceiving):</strong> Warrior Adaptability. Resets rapidly.</li>
+                <li><strong>F (Feeling):</strong> Solidarity Builder.</li>
+                <li><strong>J (Judging):</strong> Process Pro. KPI Standards.</li>
+                <li><strong>P (Perceiving):</strong> Warrior Adaptability.</li>
             </ul>
         </div>
 
         <h3>Doubt-Trap Interview & Resilience Verification</h3>
-        <p><strong>1. Physical Drain Test:</strong> Coaching clarity under extreme fatigue.</p>
-        <textarea id="note1" placeholder="Does coaching remain specific and loud?"></textarea>
+        <p><strong>1. Physical Drain Test:</strong> Coaching clarity under exhaustion.</p>
+        <textarea id="note1"></textarea>
         <p><strong>2. Unfair Criticism Anchor:</strong> Logic vs. Ego.</p>
-        <textarea id="note2" placeholder="Logical response vs defensive reaction?"></textarea>
-        <p><strong>3. Incomplete Map Intuition:</strong> Natural Leadership Speed.</p>
-        <textarea id="note3" placeholder="Did they take the pen and lead the coaching?"></textarea>
+        <textarea id="note2"></textarea>
+        <p><strong>3. Incomplete Map Intuition:</strong> Leadership speed.</p>
+        <textarea id="note3"></textarea>
         <p><strong>Assessor Final Summary:</strong></p>
-        <textarea id="coachComments" placeholder="Recruitment recommendation..."></textarea>
+        <textarea id="coachComments"></textarea>
     </div>
 
     <div class="btn-container">
         <button class="btn-calc" onclick="calculateProfile()">Generate Result</button>
         <button class="btn-print" onclick="printPDF()">Print PDF Report</button>
-        <button class="btn-save" onclick="saveDataFile()">Save Data File</button>
+        <button class="btn-save" onclick="saveDataFile()">Archive Result</button>
     </div>
 </div>
 
@@ -139,7 +136,7 @@
         ["JP", "3-1 down, 10 mins left:", "Protect stats.", "Celebrate next goal like winner.", "Hope for whistle.", "Blame others."],
         ["TF", "Pitch crisis is:", "Tactical failure.", "To Lead a losing team.", "Survival.", "Low-performing teammates."],
         ["EI", "Reaction after goal conceded:", "Head down.", "Chest out, head up, encourage.", "Hands up/Angry.", "Look at coach."],
-        ["TF", "A 'Warrior' is:", "Aggressive.", "Focus/Intense regardless of score.", "Emotionless.", "Loudest."],
+        ["TF", "A 'Warrior' is:", "Aggressive.", "Focus and intense fron the 1st second of the game, regardless of score.", "Emotionless.", "Loudest."],
         ["TF", "Coach getting angry:", "Nervous.", "He wants energy on pitch.", "Ignore.", "Personal attack."],
         ["TF", "Handle doubt relapse:", "Search for praise.", "Reset Protocol + Logic.", "Hope for easy win.", "Avoid ball."],
         ["TF", "Opponent dominates ball:", "Panic.", "Focus on Press triggers.", "Bored.", "Midfield anger."],
@@ -183,47 +180,36 @@
             }
         });
         const prof = [(sc.E >= sc.I ? "E" : "I"), (sc.S >= sc.N ? "S" : "N"), (sc.T >= sc.F ? "T" : "F"), (sc.J >= sc.P ? "J" : "P")].join('');
-        const fit = { "ESTP": "Dynamo (Finisher/Back)", "ENTJ": "Commander (Def Mid)", "ESFP": "Performer (Off Mid)", "ENFJ": "Protagonist" };
-        
-        document.getElementById('result-display').innerHTML = `<h3>Profile: ${prof}</h3><p><strong>Match:</strong> ${fit[prof] || "Hybrid"}</p>`;
+        document.getElementById('result-display').innerHTML = `<h3>Profile: ${prof}</h3>`;
         document.getElementById('scoringBody').innerHTML = `
-            <tr><td>Energy</td><td>Extrovert (E): ${sc.E}</td><td>Introvert (I): ${sc.I}</td><td>${sc.E > sc.I ? 'E' : 'I'}</td></tr>
-            <tr><td>Information</td><td>Sensing (S): ${sc.S}</td><td>Intuition (N): ${sc.N}</td><td>${sc.S > sc.N ? 'S' : 'N'}</td></tr>
-            <tr><td>Decision</td><td>Thinking (T): ${sc.T}</td><td>Feeling (F): ${sc.F}</td><td>${sc.T > sc.F ? 'T' : 'F'}</td></tr>
-            <tr><td>Lifestyle</td><td>Judging (J): ${sc.J}</td><td>Perceiving (P): ${sc.P}</td><td>${sc.J > sc.P ? 'J' : 'P'}</td></tr>`;
+            <tr><td>Energy</td><td>E: ${sc.E}</td><td>I: ${sc.I}</td><td>${sc.E > sc.I ? 'E' : 'I'}</td></tr>
+            <tr><td>Information</td><td>S: ${sc.S}</td><td>N: ${sc.N}</td><td>${sc.S > sc.N ? 'S' : 'N'}</td></tr>
+            <tr><td>Decision</td><td>T: ${sc.T}</td><td>F: ${sc.F}</td><td>${sc.T > sc.F ? 'T' : 'F'}</td></tr>
+            <tr><td>Lifestyle</td><td>J: ${sc.J}</td><td>P: ${sc.P}</td><td>${sc.J > sc.P ? 'J' : 'P'}</td></tr>`;
     }
 
     function printPDF() {
         const name = document.getElementById('playerName').value || "Player";
         const element = document.getElementById('assessment-content');
         html2pdf().from(element).set({
-            margin: [10, 10], filename: `KVC_Elite_Report_${name.replace(/\s+/g, '_')}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            margin: 10, filename: `KVC_Elite_Report_${name.replace(/\s+/g, '_')}.pdf`,
+            html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).save();
     }
 
     function saveDataFile() {
-        const nameInput = document.getElementById('playerName').value;
-        const name = (nameInput || "Unnamed_Player").replace(/\s+/g, '_');
+        const name = (document.getElementById('playerName').value || "Unnamed").replace(/\s+/g, '_');
         const res = document.getElementById('result-display').innerText;
-        const matrix = document.getElementById('scoringTable').innerText;
-        const note1 = document.getElementById('note1').value;
-        const note2 = document.getElementById('note2').value;
-        const note3 = document.getElementById('note3').value;
-        const comments = document.getElementById('coachComments').value;
+        const matrix = document.getElementById('scoringBody').innerText;
+        const notes = `Scenario 1: ${document.getElementById('note1').value}\nScenario 2: ${document.getElementById('note2').value}\nScenario 3: ${document.getElementById('note3').value}\nFinal: ${document.getElementById('coachComments').value}`;
         
-        const content = `KVC REPORT\nNAME: ${name}\n\nRESULT:\n${res}\n\nMATRIX:\n${matrix}\n\nNOTES:\nScenario 1: ${note1}\nScenario 2: ${note2}\nScenario 3: ${note3}\nFinal: ${comments}`;
+        const content = `KVC REPORT - ${name}\n\nRESULT: ${res}\n\nMATRIX:\n${matrix}\n\nNOTES:\n${notes}`;
         
-        const blob = new Blob([content], { type: 'text/plain' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${name}_Data.txt`;
-        document.body.appendChild(a); // Physical link injection for Safari/Mobile
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a); // Cleanup
+        // Final Fix: Open result in new window so you can copy/paste or save to notes
+        const newWin = window.open('', '_blank');
+        newWin.document.write(`<pre>${content}</pre>`);
+        newWin.document.close();
+        alert('Data summary opened in a new tab. You can now save or copy it.');
     }
     renderQuestions();
 </script>
