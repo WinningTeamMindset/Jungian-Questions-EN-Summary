@@ -2,47 +2,53 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KVC Westerlo - Elite Recruitment Portal</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KVC Westerlo - Recruitment Tool</title>
     <style>
-        :root { --primary: #1a2a6c; --secondary: #b21f1f; --success: #28a745; --bg: #f4f7f6; --text: #333; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: var(--primary); text-align: center; font-size: 1.6rem; text-transform: uppercase; }
-        .section-header { background: var(--primary); color: white; padding: 12px; margin-top: 30px; border-radius: 4px; font-weight: bold; }
-        .question { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-        .question p { font-weight: 600; margin-bottom: 12px; }
-        .options { display: flex; flex-direction: column; gap: 10px; }
-        label { background: #f9f9f9; padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; display: block; -webkit-tap-highlight-color: transparent; }
-        input[type="radio"] { transform: scale(1.3); margin-right: 12px; vertical-align: middle; }
-        #coach-section { display: none; margin-top: 50px; border: 4px dashed var(--secondary); padding: 25px; border-radius: 12px; background: #fffdfd; }
-        .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 40px; }
-        button { padding: 16px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; color: white; min-width: 180px; }
+        :root { --primary: #1a2a6c; --secondary: #b21f1f; --bg: #f4f7f6; --text: #333; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 850px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: var(--primary); text-align: center; text-transform: uppercase; }
+        .section-header { background: var(--primary); color: white; padding: 15px; margin-top: 30px; border-radius: 6px; font-weight: bold; }
+        .question { margin-bottom: 25px; padding: 15px; border-bottom: 1px solid #eee; }
+        .options { display: grid; gap: 10px; margin-top: 10px; }
+        label { background: #f9f9f9; padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; display: block; }
+        input[type="radio"] { margin-right: 10px; transform: scale(1.3); }
+        #coach-section { display: none; margin-top: 50px; border: 3px dashed var(--secondary); padding: 20px; background: #fffdfd; }
+        .btn-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 30px; }
+        button { padding: 15px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 16px; transition: 0.2s; }
         .btn-calc { background: var(--primary); }
         .btn-print { background: var(--secondary); }
-        .btn-save { background: var(--success); }
+        .btn-reset { background: #6c757d; }
         .btn-coach { background: #444; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background: var(--primary); color: white; }
-        textarea { width: 100%; height: 100px; padding: 12px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; }
-        .summary-box { background: #eef2ff; padding: 15px; border-left: 5px solid var(--primary); margin: 15px 0; border-radius: 4px; }
-        .pdf-page-break { page-break-before: always; height: 1px; }
+        textarea { width: 100%; height: 80px; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box; }
+        
+        /* Forces the Coach Section to be visible during Print but hidden on screen */
+        @media print {
+            .btn-container, .btn-coach, .section-header:first-of-type, .btn-reset { display: none !important; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: none; }
+            .question { page-break-inside: avoid; }
+            #coach-section { display: block !important; border: none; }
+            title { display: block; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container" id="assessment-content">
+<div class="container" id="assessment-form">
     <h1>Elite Performance Assessment</h1>
-    <p style="text-align: center; color: #666; font-size: 0.9rem;">KVC WESTERLO HIGH-PERFORMANCE UNIT</p>
+    <p style="text-align: center;">KVC WESTERLO HIGH-PERFORMANCE UNIT</p>
 
     <div class="section-header">Player Identification</div>
     <div class="question">
-        <p>Full Name:</p>
-        <input type="text" id="playerName" placeholder="Enter player name..." style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box;">
-        <p>Target Position:</p>
-        <input type="text" id="playerPosition" placeholder="e.g., Attacker" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ddd; box-sizing: border-box;">
+        <p><strong>Full Name:</strong></p>
+        <input type="text" id="playerName" oninput="updateTitle()" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
+        <p><strong>Target Position:</strong></p>
+        <input type="text" id="playerPosition" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
     </div>
 
     <div id="survey-questions"></div>
@@ -53,48 +59,31 @@
 
     <div id="coach-section">
         <h2 style="color: var(--secondary); text-align: center;">CONFIDENTIAL COACHING ANALYSIS</h2>
-        <div id="result-display" class="summary-box"></div>
+        <div id="result-display" style="background: #eef2ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;"></div>
         
         <h3>Tipping Point Matrix</h3>
-        <table id="scoringTable">
-            <thead><tr><th>Segment</th><th>Trait A Count</th><th>Trait B Count</th><th>Status</th></tr></thead>
+        <table>
+            <thead><tr><th>Segment</th><th>Trait A</th><th>Trait B</th><th>Dominant</th></tr></thead>
             <tbody id="scoringBody"></tbody>
         </table>
 
-        <div class="summary-box">
-            <h4>Trait Meanings for KVC Westerlo</h4>
-            <ul style="font-size: 0.9rem; padding-left: 20px;">
-                <li><strong>E (Extrovert):</strong> Vocal Force. Drives the auditory force needed to break the silent culture.</li>
-                <li><strong>I (Introvert):</strong> Internal Processor. High risk of "Relapse of Doubt".</li>
-                <li><strong>S (Sensing):</strong> 50/50 V/K Talent engine.</li>
-                <li><strong>N (Intuitive):</strong> Pattern Reader.</li>
-                <li><strong>T (Thinking):</strong> Logic Shield. Immune to emotional contagion.</li>
-                <li><strong>F (Feeling):</strong> Solidarity Builder. Glue for team cohesion.</li>
-                <li><strong>J (Judging):</strong> Process Pro. Strict KPI standards.</li>
-                <li><strong>P (Perceiving):</strong> Warrior Adaptability. Resets rapidly.</li>
-            </ul>
-        </div>
-
-        <h3>Doubt-Trap Interview & Resilience Verification</h3>
-        <p><strong>1. Physical Drain Test:</strong> Coaching clarity under exhaustion.</p>
-        <textarea id="note1" placeholder="Does coaching remain specific and loud?"></textarea>
-        <p><strong>2. Unfair Criticism Anchor:</strong> Logic vs. Ego.</p>
-        <textarea id="note2" placeholder="Logical response vs defensive reaction?"></textarea>
-        <p><strong>3. Incomplete Map Intuition:</strong> Natural Leadership Speed.</p>
-        <textarea id="note3" placeholder="Did they take the pen and lead the 'coaching' without permission?"></textarea>
-        <p><strong>Assessor Final Summary:</strong></p>
-        <textarea id="coachComments" placeholder="Recruitment recommendation..."></textarea>
+        <h3>Resilience Verification</h3>
+        <p><strong>1. Physical Drain Test:</strong></p>
+        <textarea id="note1" placeholder="Vocal coaching clarity under fatigue..."></textarea>
+        <p><strong>2. Unfair Criticism Anchor:</strong></p>
+        <textarea id="note2" placeholder="Logic vs Ego reaction..."></textarea>
+        <p><strong>3. Incomplete Map Intuition:</strong></p>
+        <textarea id="note3" placeholder="Natural leadership speed..."></textarea>
     </div>
 
     <div class="btn-container">
         <button class="btn-calc" onclick="calculateProfile()">Generate Result</button>
-        <button class="btn-print" onclick="printPDF()">Print PDF Report</button>
-        <button class="btn-save" onclick="saveDataFile()">Save Data File</button>
+        <button class="btn-print" onclick="handlePrint()">Save to Desktop (PDF)</button>
+        <button class="btn-reset" onclick="resetForm()">Reset Form</button>
     </div>
 </div>
 
 <script>
-    // [Question data array remains same as your 50-question version]
     const questions = [
         ["TF", "When I face a major setback, my internal monologue is:", "Why me?", "Talk to someone.", "What is the lesson? Adjust.", "Forget it fast."],
         ["SN", "Relationship with failure?", "A wall.", "Avoid at all costs.", "A stepping stone.", "Temporary blow."],
@@ -107,45 +96,45 @@
         ["TF", "Harsh teammate criticism on pitch:", "Defensive.", "Process data & Adjust.", "Energy drop.", "Wait until later."],
         ["JP", "Success is defined by:", "Final score.", "Execution and process.", "Status/Recognition.", "Group harmony."],
         ["EI", "In a silent locker room after loss:", "Stay silent.", "Vocal outcome-focused message.", "Analyze stats alone.", "Wait for captain."],
-        ["EI", "Pitch communication preference:", "Lead by example (silent).", "Short, loud coaching on the pitch.", "Talk to 2-3 players nearby.", "Correcting mistakes."],
-        ["EI", "Teammate panicking during a defensive press:", "Avoid them.", "Give coaching and instructions.", "Yell to wake up.", "Hope for sub."],
+        ["EI", "Pitch communication preference:", "Lead by example (silent).", "Short, loud coaching.", "Talk to 2-3 nearby.", "Correcting mistakes."],
+        ["EI", "Teammate panicking during press:", "Avoid them.", "Give clear coaching/instructions.", "Yell to wake up.", "Hope for sub."],
         ["EI", "Natural role with strangers:", "Observer.", "Ice breaker/Talker.", "Speak for specific points.", "Follower."],
-        ["TF", "Teammate showing 60% effort in training:", "Ignore it.", "Call out immediately.", "Do the same.", "Mention privately."],
-        ["TF", "Solidarity is built by:", "Off-pitch social.", "Covering mistakes.", "Never criticize in public.", "Winning."],
+        ["TF", "Teammate showing 60% effort:", "Ignore it.", "Call out immediately.", "Do the same.", "Mention privately."],
+        ["TF", "Solidarity is built by:", "Off-pitch social.", "Covering each others mistakes.", "Never criticize in public.", "Winning."],
         ["EI", "Reaction to bad ref call:", "Chase ref.", "Tell team: 'Ref done, next ball!'", "Internal anger.", "Look at coach."],
         ["EI", "Primary use of voice:", "Express frustration.", "Organize and keep energy high.", "Ask for ball.", "Technical info only."],
-        ["EI", "Small talk in meet-and-greet:", "Exhausting.", "Build rapport & read people.", "Duty only.", "Easy."],
+        ["EI", "Small talk in meet-and-greet:", "Exhausting.", "Build rapport/read people.", "Duty only.", "Easy."],
         ["EI", "Opinion in team meeting:", "Wait for seniors.", "Propose a solution.", "Stay quiet.", "Only if asked."],
         ["SN", "Learning a new tactic:", "Listen to theory.", "See board + Physical walk.", "Read notes.", "Feel emotions."],
-        ["SN", "Performing at highest level:", "Coach's pep talk.", "Visual pictures + Practice.", "Crowd support.", "Will to win."],
-        ["SN", "Fixing technical error:", "Video + Physical drill.", "Talk to coach.", "Wait/Figure it out.", "Study stats."],
-        ["SN", "During match focus:", "Scan before ball.", "Wait for coaching.", "Internal monologue.", "Manage emotions."],
-        ["EI", "Style in 3 words:", "Quiet/Smart.", "Vocal/Physical/Sharp.", "Brave/Social.", "Fast/Lucky."],
-        ["SN", "Response to 'Don't foul':", "Think of foul.", "Reframe: 'Stay clean'.", "Nervous.", "Hope not me."],
-        ["SN", "Preferred video analysis:", "30 min theory.", "20 min success clips.", "Mistake focus.", "Group on pitch."],
-        ["SN", "Pitch intuition feels like:", "Think before I act.", "Feel intuitively.", "Logic.", "Adrenaline."],
-        ["SN", "To get 'in the zone':", "Silence.", "Energy music + Physical contact.", "Personal KPIs.", "Visualize stadium."],
-        ["SN", "Understand teammate intent:", "Listening.", "Watching body language.", "Personality.", "Halftime talks."],
-        ["JP", "Phone policy:", "Connected.", "In locker.", "Mirror seniors.", "Music only."],
-        ["JP", "3-0 up intensity:", "Save energy.", "Hunt clean sheet.", "Depends on enemy.", "Show off."],
-        ["JP", "Arriving on time:", "Exactly on time.", "5 mins before.", "Follow group.", "Not last."],
-        ["JP", "Media praise:", "Social media later.", "About team first.", "Deep insights.", "Boost."],
-        ["JP", "Correction in training:", "Insulted.", "Listen + Feel change.", "Explain why.", "Nod/Wait."],
-        ["JP", "Complete professional:", "Talented.", "Standards when alone.", "Peace/No conflict.", "Popular."],
-        ["EI", "Travel habits:", "Isolated.", "Seek contact.", "Sleep/Movie.", "Chit-chat."],
-        ["JP", "Rules are:", "To be broken.", "Foundation of force.", "Coach's control.", "Annoying/Free."],
-        ["EI", "Role when injured:", "Stay home.", "Stay present + Vocal support.", "Avoid dressing room.", "Wait for invite."],
-        ["JP", "Performance judgment:", "Win/Loss.", "KPIs met.", "Media comments.", "Enjoyment."],
+        ["SN", "Best way to perform highest level:", "Coach's pep talk.", "Visual tactical pictures/practice.", "Support of crowd.", "Will to win."],
+        ["SN", "Fixing technical error:", "Video + Physical drill.", "Talk to coach.", "Figure it out.", "Study stats."],
+        ["SN", "During the Match I focus:", "Scanning before ball.", "Wait for coaching.", "Internal monologue.", "Manage emotions."],
+        ["EI", "Your Style in 3 words:", "Quiet, Smart.", "Vocal, Physical, Sharp.", "Brave, Social, Vocal.", "Fast, Lucky."],
+        ["SN", "Response to 'Don't make a foul':", "Think of foul.", "Reframe: 'Keep actions clean'.", "Nervous.", "Hope not me."],
+        ["SN", "Preferred video analysis:", "30 min theory.", "20 min success clips.", "Mistake focus.", "Group chat setting."],
+        ["SN", "Pitch intuition feels like:", "Think before I act.", "See what needs to happen.", "Logic.", "Adrenaline."],
+        ["SN", "To get 'in the zone':", "Silence.", "Energy music.", "Personal KPIs.", "Visualize stadium."],
+        ["SN", "Understand teammate's intent:", "Listening.", "Watching body language.", "Personality.", "Halftime talks."],
+        ["JP", "Gym/Physio phone policy:", "Stay connected.", "In the box/locker.", "Mirror seniors.", "Music only."],
+        ["JP", "3-0 up intensity:", "Save energy.", "Hunt clean sheet.", "Depends on opponent.", "Show off skills."],
+        ["JP", "Arriving 'on time':", "Exactly on time.", "5 mins before.", "Follow group.", "Not last."],
+        ["JP", "Media praising my game:", "Check social media.", "Team efforts first.", "Deep insights.", "A boost."],
+        ["JP", "Correction from coaching staff:", "Insulted.", "Listen + Feel change.", "Explain why.", "Nod/Keep head down."],
+        ["JP", "Complete professional is:", "Most talented.", "Standards when alone.", "Keep the peace.", "Popular."],
+        ["EI", "Team traveling habits:", "Isolated.", "Seek contact.", "Sleep/Movie.", "Gather for chit-chat."],
+        ["JP", "Rules and protocols are:", "There to be broken.", "Foundation of force.", "Coach's control.", "Annoying."],
+        ["EI", "My Role when injured:", "Stay home.", "Stay Present + support.", "Avoid dressing room.", "Wait for invite."],
+        ["JP", "Performance judgment:", "Win/Loss.", "KPIs met.", "Media/Social.", "Enjoyment."],
         ["JP", "3-1 down, 10 mins left:", "Protect stats.", "Celebrate next goal.", "Hope for whistle.", "Blame others."],
-        ["TF", "Pitch crisis is:", "Tactical failure.", "Lead losing team.", "Survival.", "Low-perf teammates."],
-        ["EI", "Reaction goal conceded:", "Head down.", "Chest out/Encourage.", "Hands up/Angry.", "Look at coach."],
-        ["TF", "A 'Warrior' is:", "Aggressive.", "Focus/Intense regardless of score.", "Emotionless.", "Loudest."],
-        ["TF", "Coach getting angry:", "Nervous.", "He wants energy on pitch.", "Ignore.", "Personal attack."],
-        ["TF", "Doubt relapse:", "Search for praise.", "Reset Protocol + Logic.", "Hope for easy win.", "Avoid ball."],
-        ["TF", "Opponent dominates:", "Panic.", "Press triggers.", "Bored.", "Midfield anger."],
-        ["TF", "Leader job after loss:", "Identify mistakes.", "Support & Refocus.", "Stay quiet.", "Defend team."],
-        ["TF", "Fighting spirit:", "No embarrassment.", "Commitment to Force.", "Money.", "Hero desire."],
-        ["EI", "One Force means:", "Talent.", "Vocal/Accountable/Covering.", "Comfortable.", "Days off."]
+        ["TF", "Pitch crisis is:", "Tactical failure.", "Lead a losing team.", "Survival.", "Low-perf teammates."],
+        ["EI", "Reaction after goal conceded:", "Head down.", "Chest out, Encourage.", "Hands up/Angry.", "Look at coach."],
+        ["TF", "A 'Warrior' is:", "Aggressive.", "Intense from 1st second.", "Emotionless.", "Loudest."],
+        ["TF", "Coach getting angry:", "Nervous.", "Energy to pitch.", "Ignore.", "Personal attack."],
+        ["TF", "Handle doubt relapse:", "Search for praise.", "Reset Protocol + Logic.", "Hope for easy win.", "Avoid ball."],
+        ["TF", "Opponent dominates ball:", "Panic.", "Focus on Press triggers.", "Bored.", "Midfield anger."],
+        ["TF", "Leader's job after loss:", "Identify mistakes.", "Support & Refocus.", "Stay quiet.", "Defend team."],
+        ["TF", "Fighting spirit trigger:", "No embarrassment.", "Commitment to Force.", "Money.", "Hero desire."],
+        ["EI", "ONE FORCE means:", "Talent.", "Vocal, Accountable, Covering.", "Comfortable.", "Days off."]
     ];
 
     function renderQuestions() {
@@ -153,21 +142,26 @@
         questions.forEach((q, i) => {
             const div = document.createElement('div');
             div.className = 'question';
-            div.innerHTML = `<p>${i+1}. ${q[1]}</p>
-                <div class="options">
-                    <label><input type="radio" name="q${i}" value="a"> ${q[2]}</label>
-                    <label><input type="radio" name="q${i}" value="b"> ${q[3]}</label>
-                    <label><input type="radio" name="q${i}" value="c"> ${q[4]}</label>
-                    <label><input type="radio" name="q${i}" value="d"> ${q[5]}</label>
-                </div>`;
+            div.innerHTML = `<p>${i+1}. ${q[1]}</p><div class="options">
+                <label><input type="radio" name="q${i}" value="a"> ${q[2]}</label>
+                <label><input type="radio" name="q${i}" value="b"> ${q[3]}</label>
+                <label><input type="radio" name="q${i}" value="c"> ${q[4]}</label>
+                <label><input type="radio" name="q${i}" value="d"> ${q[5]}</label>
+            </div>`;
             container.appendChild(div);
         });
     }
 
     function unlockCoach() {
-        if(prompt("Enter Coach Password:") === "kvc2025") {
+        if(prompt("Coach Password:") === "kvc2025") {
             document.getElementById('coach-section').style.display = 'block';
+            alert("Coach section unlocked. It will now be included in the PDF.");
         }
+    }
+
+    function updateTitle() {
+        const name = document.getElementById('playerName').value || "Assessment";
+        document.title = `KVC_Elite_Report_${name.replace(/\s+/g, '_')}`;
     }
 
     function calculateProfile() {
@@ -180,7 +174,7 @@
             else { if(type.includes("I")) sc.I++; if(type.includes("S")) sc.S++; if(type.includes("F")) sc.F++; if(type.includes("P")) sc.P++; }
         });
         const prof = [(sc.E >= sc.I ? "E" : "I"), (sc.S >= sc.N ? "S" : "N"), (sc.T >= sc.F ? "T" : "F"), (sc.J >= sc.P ? "J" : "P")].join('');
-        document.getElementById('result-display').innerHTML = `<h3>Profile: ${prof}</h3>`;
+        document.getElementById('result-display').innerHTML = `<h3>Calculated Profile: ${prof}</h3>`;
         document.getElementById('scoringBody').innerHTML = `
             <tr><td>Energy</td><td>E: ${sc.E}</td><td>I: ${sc.I}</td><td>${sc.E > sc.I ? 'E' : 'I'}</td></tr>
             <tr><td>Information</td><td>S: ${sc.S}</td><td>N: ${sc.N}</td><td>${sc.S > sc.N ? 'S' : 'N'}</td></tr>
@@ -188,28 +182,17 @@
             <tr><td>Lifestyle</td><td>J: ${sc.J}</td><td>P: ${sc.P}</td><td>${sc.J > sc.P ? 'J' : 'P'}</td></tr>`;
     }
 
-    // APPLE-SPECIFIC PDF FIX
-    function printPDF() {
-        const name = (document.getElementById('playerName').value || "Player").replace(/\s+/g, '_');
-        const element = document.getElementById('assessment-content');
-        
-        // Critical Settings for Safari/iOS
-        const opt = {
-            margin: 5,
-            filename: `KVC_Elite_Report_${name}.pdf`,
-            image: { type: 'jpeg', quality: 1 },
-            html2canvas: { scale: 1.5, useCORS: true, letterRendering: true, scrollY: 0 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        // Delay execution to ensure browser finishes rendering inputs
-        html2pdf().from(element).set(opt).toPdf().get('pdf').then(function (pdf) {
-            window.open(pdf.output('bloburl'), '_blank');
-        }).save();
+    function handlePrint() {
+        window.print();
     }
 
-    function saveDataFile() {
-        const name = (document.getElementById('playerName').value || "Unnamed").replace(/\s+/g, '_');
-        const res = document.getElementById('result-display').innerText;
-        const matrix = document.getElementById('scoringTable').innerText;
-        const blob = new Blob([`KVC REPORT\nNAME: ${name}\n\nRESULT:\n${res}\n\nMATRIX:\n${matrix}`], { type
+    function resetForm() {
+        if(confirm("Clear all data and start a new form?")) {
+            location.reload();
+        }
+    }
+
+    renderQuestions();
+</script>
+</body>
+</html>
